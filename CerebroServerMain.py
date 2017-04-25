@@ -43,10 +43,12 @@ def search_book_by_id(id):
 
 @app.route('/media/api/v1.0/movies/<int:id>', methods = ['GET'])
 def search_movie_by_id(id):
-    results = [movie for movie in stub_movies if movie['id'] == id]
+    results = [movie for movie in stub_movies if book['id'] == id]
     if len(results) <= 0:
         abort(404)
     return jsonify({'movies':results})
+
+
 
 #debug method
 @app.route('/media/api/v1.0/books', methods = ['GET'])
