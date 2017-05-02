@@ -31,7 +31,7 @@ stub_movies = [
 
 @app.route('/')
 def welcome():
-   return 'up-to-date api :v1.0/nuse /media/api/v1.0'
+   return 'up-to-date api :v1.0\nuse /media/api/v1.0'
 
 @app.route('/media/api/v1.0/books/<int:id>', methods = ['GET'])
 def search_book_by_id(id):
