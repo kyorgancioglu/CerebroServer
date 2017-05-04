@@ -1,5 +1,15 @@
-from flask import Flask, jsonify, abort
+import os
+from flask import Flask, request, jsonify, abort
+from werkzeug.utils import secure_filename
 app = Flask(__name__)
+
+
+APP_ROOT = os.path.dirname(os.path.abspath(__file__))
+UPLOAD_FOLDER = os.path.join(APP_ROOT, './uploads')
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg'])
+
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 #book stubs
 stub_books = [
     {
@@ -31,7 +41,7 @@ stub_movies = [
 
 @app.route('/')
 def welcome():
-   return 'up-to-date api :v1.0\nuse /media/api/v1.0'
+   return 'up-to-date api :v1.0 use /media/api/v1.0'
 
 @app.route('/media/api/v1.0/books/<int:id>', methods = ['GET'])
 def search_book_by_id(id):
@@ -54,6 +64,23 @@ def search_movie_by_id(id):
 @app.route('/media/api/v1.0/books', methods = ['GET'])
 def get_books():
     return jsonify({'books':stub_books})
+
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+@app.route('/media/api/v1.0/movies/s', methods = ['POST'])
+def search_movie_by_image():
+    if request.method == 'POST':
+        if 'file' not in request.files:
+            return 'no file part'
+        file = request.files['file']
+        if file.filename == '':
+            return 'no filename'
+        if file and allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            return 'file uploaded'
 
 if __name__ == '__main__':
    app.run(debug = True)
