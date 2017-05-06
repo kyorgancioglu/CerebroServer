@@ -7,7 +7,7 @@ app = Flask(__name__)
 APP_ROOT = os.path.dirname(os.path.abspath(__file__))
 UPLOAD_FOLDER = os.path.join(APP_ROOT, './uploads')
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg'])
+ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'bmp'])
 
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 #book stubs
@@ -83,4 +83,4 @@ def search_movie_by_image():
             return 'file uploaded'
 
 if __name__ == '__main__':
-app.run(debug = True)
+    app.run(debug = True)
