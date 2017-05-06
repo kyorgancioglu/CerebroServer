@@ -81,6 +81,8 @@ def search_movie_by_image():
             filename = secure_filename(file.filename)
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
             return 'file uploaded'
+        else:
+            return 'file extension not allowed'
 
 if __name__ == '__main__':
     app.run(debug = True)
