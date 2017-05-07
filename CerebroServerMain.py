@@ -1,5 +1,5 @@
 import os
-from flask import Flask, request, jsonify, abort
+from flask import Flask, request, jsonify, abort, send_file
 from werkzeug.utils import secure_filename
 app = Flask(__name__)
 
@@ -58,7 +58,9 @@ def search_movie_by_id(id):
         abort(404)
     return jsonify({'movies':results})
 
-
+@app.route('/debug/see')
+def see_file():
+    return send_file('./uploads/upload.bmp')
 
 #debug method
 @app.route('/media/api/v1.0/books', methods = ['GET'])
