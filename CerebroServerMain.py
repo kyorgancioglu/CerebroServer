@@ -1,8 +1,9 @@
 import os
 from flask import Flask, request, jsonify, abort, send_file
 from werkzeug.utils import secure_filename
+from clarifai.rest import ClarifaiApp
 app = Flask(__name__)
-
+clf = ClarifaiApp()
 
 APP_ROOT = os.path.dirname(os.path.abspath(__file__))
 UPLOAD_FOLDER = os.path.join(APP_ROOT, './uploads')
@@ -10,6 +11,8 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'bmp'])
 
+#os.environ['CLARIFAI_APP_ID'] = 'boEFgeb2dA1OyON3PcXRd_Fle1r0jP-FyzIa1aqn'
+#os.environ['CLARIAI_APP_SECRET'] = 'ZSe1ekDr4lXddODOzZJYYpudcMw8A_k4OlzLMt0w'
 #book stubs
 stub_books = [
     {
@@ -71,6 +74,10 @@ def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
+def search_in_clarifai(file):
+    res = clf.inputs.search_by_image(fileobj=file, per_page = 1)
+    return res[0].url
+
 @app.route('/media/api/v1.0/movies/s', methods = ['POST'])
 def search_movie_by_image():
     if request.method == 'POST':
@@ -80,10 +87,10 @@ def search_movie_by_image():
         if file.filename == '':
             return 'no filename'
         if file and allowed_file(file.filename):
-            filename = secure_filename(file.filename)
-            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-            print(filename)
-            return 'file uploaded'
+            #filename = secure_filename(file.filename)
+            #file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            res_url = search_in_clarifai(file)
+            return res_url
         else:
             return 'file extension not allowed'
 
